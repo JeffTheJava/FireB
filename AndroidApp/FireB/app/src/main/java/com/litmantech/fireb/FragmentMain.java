@@ -3,6 +3,7 @@ package com.litmantech.fireb;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,22 +30,29 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.litmantech.fireb.login.LoginHandler;
+import com.litmantech.fireb.login.SignInListener;
 
 /**
  * Created by Jeff_Dev_PC on 9/6/2016.
  */
-public class FragmentMain extends Fragment implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class FragmentMain extends Fragment implements View.OnClickListener, SignInListener {
 
     private static final String TAG = FragmentMain.class.getSimpleName();
-    private static int SIGN_IN_CODE = 504;
-    private GoogleApiClient mGoogleApiClient;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser mFirebaseUser;
+    private FirebaseUser mUser;
 
     private SignInButton signInButton;
     private Button signOutButton;
     private TextView dataTextView;
+    private LoginHandler mLoginHandler;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mLoginHandler = new LoginHandler(this.getActivity());
+        mLoginHandler.setSignInListener(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,123 +65,68 @@ public class FragmentMain extends Fragment implements GoogleApiClient.OnConnecti
         signInButton.setOnClickListener(this);
         signOutButton.setOnClickListener(this);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-
-        initGoogleOauth();
-
         updateUI();
+
         return view;
     }
 
-    private void updateUI() {
-
-        if(mFirebaseUser == null){
-            signInButton.setEnabled(true);
-            signOutButton.setEnabled(false);
-            dataTextView.setText("Please sign in!!");
-        }else{
-            signInButton.setEnabled(false);
-            signOutButton.setEnabled(true);
-            dataTextView.setText("Signed in user :"+mFirebaseUser.getDisplayName());
-        }
-    }
-
-    private void initGoogleOauth() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity()).enableAutoManage(this.getActivity(),this).addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
-    }
-
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+    public void onResume() {
+        super.onResume();
+        if(mLoginHandler.isLoggedIn()){
+            mUser = mLoginHandler.getUser();
+        }
+        updateUI();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.sign_in_button:
-                signIn();
+                mLoginHandler.SignInGoogle(this);
                 break;
             case R.id.sign_out_button:
-                signOut();
+                mLoginHandler.signOut();
                 break;
         }
-    }
-
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent,SIGN_IN_CODE);
-    }
-
-    private void signOut(){
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                FragmentMain.this.onSignOut(status);
-            }
-        });
-        mFirebaseAuth.signOut();
-        mFirebaseUser = null;
-        updateUI();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SIGN_IN_CODE){
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+        if(requestCode == LoginHandler.SIGN_IN_CODE){
+            mLoginHandler.onSignInResult(data);
         }
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
+    @Override
+    public void onSignInSuccessful() {
+        Toast.makeText(getActivity(), "Authentication Worked.",Toast.LENGTH_SHORT).show();
+        updateUI();
+    }
 
-        if(result.isSuccess()){
-            LogD("Google Sign Successfully");
-            onSignIn(result);
+    @Override
+    public void onSignInFail() {
+        Toast.makeText(getActivity(), "Authentication failed.",Toast.LENGTH_SHORT).show();
+        updateUI();
+    }
+
+    @Override
+    public void onSignOut() {
+        Toast.makeText(getActivity(), "SignOut.",Toast.LENGTH_SHORT).show();
+        updateUI();
+    }
+
+    private void updateUI() {
+        mUser = mLoginHandler.getUser();
+        if(!mLoginHandler.isLoggedIn()){
+            signInButton.setEnabled(true);
+            signOutButton.setEnabled(false);
+            dataTextView.setText("Please sign in!!");
         }else{
-            LogD("Google Sign fail!!");
-            dataTextView.setText("Unable to sign in");
+            signInButton.setEnabled(false);
+            signOutButton.setEnabled(true);
+            dataTextView.setText("Signed in user :"+mUser.getDisplayName());
         }
-    }
-
-    private void onSignIn(GoogleSignInResult result) {
-        GoogleSignInAccount gAccount = result.getSignInAccount();
-        AuthCredential credential = GoogleAuthProvider.getCredential(gAccount.getIdToken(), null);
-
-
-
-
-        mFirebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this.getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(FragmentMain.this.getActivity(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(FragmentMain.this.getActivity(), "Authentication Worked.",
-                                    Toast.LENGTH_SHORT).show();
-                            mFirebaseUser = mFirebaseAuth.getCurrentUser();
-                        }
-                        updateUI();
-                    }
-                });
-
-    }
-
-    private void onSignOut(Status status) {
-    }
-
-
-    private void LogD(String message) {
-        Log.d(TAG,message);
     }
 }
