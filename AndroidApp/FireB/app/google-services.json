@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "864151366132",
+    "firebase_url": "https://impekable-jeff.firebaseio.com",
+    "project_id": "impekable-jeff",
+    "storage_bucket": "impekable-jeff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864151366132:android:b305f6eefd6a3fdd",
+        "android_client_info": {
+          "package_name": "com.litmantech.fireb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "864151366132-ev50v2v3t9n3ivoc3okck7t8nac6h4nc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.litmantech.fireb",
+            "certificate_hash": "A33F29907B79D719D76301F732589D2EB535FAA7"
+          }
+        },
+        {
+          "client_id": "864151366132-c3dchj25d405sr4gmi7i9iokcsj26bcj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQC4nf6GW8zmdbvovQtSb5OKWc3pMFSJM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "864151366132-c3dchj25d405sr4gmi7i9iokcsj26bcj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

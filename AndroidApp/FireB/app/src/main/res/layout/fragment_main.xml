@@ -9,7 +9,21 @@
         android:text="Frament Main"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out"
+        android:id="@+id/sign_out_button"
+        android:layout_below="@+id/sign_in_button"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
