@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,22 +32,28 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.litmantech.fireb.database.DatabaseHandler;
+import com.litmantech.fireb.database.DatabaseInitListener;
+import com.litmantech.fireb.database.channels.ChannelEventListener;
+import com.litmantech.fireb.database.channels.ChannelRecyclerAdapter;
 import com.litmantech.fireb.login.LoginHandler;
 import com.litmantech.fireb.login.SignInListener;
 
 /**
  * Created by Jeff_Dev_PC on 9/6/2016.
  */
-public class FragmentMain extends Fragment implements View.OnClickListener, SignInListener {
+public class FragmentMain extends Fragment implements View.OnClickListener, SignInListener, ChannelEventListener {
 
     private static final String TAG = FragmentMain.class.getSimpleName();
     private FirebaseUser mUser;
 
+    private RecyclerView mRecyclerView;
     private SignInButton signInButton;
     private Button signOutButton;
     private TextView dataTextView;
     private LoginHandler mLoginHandler;
-    private TestChannelList testing;
+    private DatabaseHandler dbHolder;
+    private ChannelRecyclerAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +61,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
 
         mLoginHandler = new LoginHandler(this.getActivity());
         mLoginHandler.setSignInListener(this);
+
+        dbHolder = new DatabaseHandler();
     }
 
     @Override
@@ -64,10 +73,13 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         signOutButton = (Button) view.findViewById(R.id.sign_out_button);
         dataTextView = (TextView) view.findViewById(R.id.textView);
 
+        mRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+
         signInButton.setOnClickListener(this);
         signOutButton.setOnClickListener(this);
 
-        testing = new TestChannelList(this.getActivity(),(RecyclerView) view.findViewById(R.id.recyclerView));
         updateUI();
 
         return view;
@@ -78,10 +90,28 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         super.onResume();
         if(mLoginHandler.isLoggedIn()){
             mUser = mLoginHandler.getUser();
-            testing.onStart();
+            initChannelDataBase();
+
         }
         updateUI();
 
+    }
+
+    private void initChannelDataBase() {
+        dbHolder.setChannelEventListener(this);
+        dbHolder.initChannels(new DatabaseInitListener() {
+            @Override
+            public void onInitComplete() {
+                adapter = new ChannelRecyclerAdapter(FragmentMain.this.getActivity(),dbHolder.getChannels());
+                mRecyclerView.setAdapter(adapter);
+                updateUI();
+            }
+
+            @Override
+            public void onInitError(String message) {
+                updateUI();
+            }
+        });
     }
 
     @Override
@@ -107,6 +137,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
     @Override
     public void onSignInSuccessful() {
         Toast.makeText(getActivity(), "Authentication Worked.",Toast.LENGTH_SHORT).show();
+        initChannelDataBase();
         updateUI();
     }
 
@@ -118,6 +149,9 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
 
     @Override
     public void onSignOut() {
+        if(adapter != null){
+            adapter.cleanup();
+        }
         Toast.makeText(getActivity(), "SignOut.",Toast.LENGTH_SHORT).show();
         updateUI();
     }
@@ -133,5 +167,20 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
             signOutButton.setEnabled(true);
             dataTextView.setText("Signed in user :"+mUser.getDisplayName());
         }
+
+        if(adapter != null){
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+
+    @Override
+    public void onChannelDataChanged() {
+        updateUI();
+    }
+
+    @Override
+    public void onChannelCancelled(String message) {
+        updateUI();
     }
 }

@@ -14,24 +14,32 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.litmantech.fireb.database.DatabaseHandler;
+import com.litmantech.fireb.database.DatabaseInitListener;
+import com.litmantech.fireb.database.channels.ChannelRecyclerAdapter;
 
 /**
  * A class to play around with the channel list. nothing really crazy
  * Created by Jeff_Dev_PC on 9/8/2016.
  */
 public class TestChannelList {
-    private final RecyclerView mRecyclerView;
+    private final Context mContext;
     private DatabaseReference ref;
     private FirebaseRecyclerAdapter<Chat, ChatHolder> mAdapter;
 
     public TestChannelList(Context context, RecyclerView recyclerView){
-        mRecyclerView = recyclerView;
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mContext = context;
+
     }
 
     public void onStart(){
 
+
+        //oldTesting();
+
+    }
+
+    private void oldTesting() {
 
         DatabaseReference refHolder = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl("https://impekable-jeff.firebaseio.com/c:design");
@@ -59,8 +67,7 @@ public class TestChannelList {
                 chatMessageViewHolder.setMessage(chatMessage.getMessage());
             }
         };
-        mRecyclerView.setAdapter(mAdapter);
-
+        //mRecyclerView.setAdapter(mAdapter);
     }
 
 

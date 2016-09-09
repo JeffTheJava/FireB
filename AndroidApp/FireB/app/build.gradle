@@ -31,5 +31,8 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-database:0.4.1'
     compile 'com.google.android.gms:play-services-auth:9.4.0'
     compile 'com.firebase:firebase-client-android:2.3.1'
+    // https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime
+    compile group: 'org.ocpsoft.prettytime', name: 'prettytime', version: '4.0.1.Final'
+
 }
 apply plugin: 'com.google.gms.google-services'
