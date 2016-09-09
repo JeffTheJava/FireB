@@ -78,9 +78,10 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         super.onResume();
         if(mLoginHandler.isLoggedIn()){
             mUser = mLoginHandler.getUser();
+            testing.onStart();
         }
         updateUI();
-        testing.onStart();
+
     }
 
     @Override
