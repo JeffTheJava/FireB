@@ -5,6 +5,9 @@ package com.litmantech.fireb.database.messages;
  */
 public class Message {
 
+    public static final String AUTHOR_KEY = "author";
+    public static final String CREATED_KEY = "created";
+    public static String MESSAGE_KEY = "message";
     private final String mAuthor;
     private final long mCreated;
     private final String mMessage;

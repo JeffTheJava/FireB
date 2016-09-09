@@ -10,6 +10,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.litmantech.fireb.database.channels.Channel;
 import com.litmantech.fireb.database.channels.ChannelEventListener;
 import com.litmantech.fireb.database.channels.ChannelHandler;
+import com.litmantech.fireb.database.messages.Message;
+import com.litmantech.fireb.database.messages.MessageEventListener;
+import com.litmantech.fireb.database.messages.MessagesHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +26,7 @@ import java.util.Objects;
 public class DatabaseHandler {
     private final DatabaseReference db;
     private final ChannelHandler channelHandler;
-    private boolean isInitializing = false;
+    private final MessagesHandler messagesHandler;
 
     /**
      * Do not instantiate  this object unless you have successfully logged in
@@ -31,6 +34,7 @@ public class DatabaseHandler {
     public DatabaseHandler(){
         db = FirebaseDatabase.getInstance().getReference();
         channelHandler = new ChannelHandler();
+        messagesHandler = new MessagesHandler(db);
     }
 
     /**
@@ -40,7 +44,7 @@ public class DatabaseHandler {
     public void initChannels(DatabaseInitListener initListener){
         //check if we have already initialized if so the just return
         if(!channelHandler.getChannels().isEmpty()) return;
-        if(isInitializing) return;
+        if(channelHandler.isInitializing()) return;
 
         channelHandler.init(db,initListener);
     }
@@ -55,7 +59,16 @@ public class DatabaseHandler {
         channelHandler.setChannelEventListener(channelEventListener);
     }
 
-    public void initMessages(Channel mChannel) {
+    public void initMessages(Channel mChannel, DatabaseInitListener databaseInitListener) {
+        messagesHandler.init(mChannel,databaseInitListener);
 
+    }
+
+    public void setMessageEventListener(MessageEventListener messageEventListener) {
+        messagesHandler.setMessageEventListener(messageEventListener);
+    }
+
+    public ArrayList<Message> getMessages() {
+        return messagesHandler.getMessages();
     }
 }

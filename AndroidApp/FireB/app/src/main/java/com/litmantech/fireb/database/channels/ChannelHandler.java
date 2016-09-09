@@ -13,22 +13,22 @@ import java.util.Iterator;
  * Created by Jeff_Dev_PC on 9/9/2016.
  */
 public class ChannelHandler {
-    private boolean isInitializing = false;
+    private boolean initializing = false;
     private ChannelEventListener mChannelEventListener;
     private final HashMap<String,Channel> channels = new HashMap<>();
 
 
     public void init(DatabaseReference db, final DatabaseInitListener initListener) {
-        isInitializing = true;
+        initializing = true;
         DatabaseReference dbChannels = db.child("channels");
         dbChannels.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String,Object> channelsHolder = (HashMap<String, Object>) dataSnapshot.getValue();
                 BuildChannels(channelsHolder);
-                if(isInitializing){//TODO i don't like this if statement i dont know how to fix it yet. will get back to it.
+                if(initializing){//TODO i don't like this if statement i dont know how to fix it yet. will get back to it.
                     initListener.onInitComplete();
-                    isInitializing = false;
+                    initializing = false;
                 }
 
                 if(mChannelEventListener !=null){
@@ -41,8 +41,8 @@ public class ChannelHandler {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
-                if(isInitializing){
-                    isInitializing = false;
+                if(initializing){
+                    initializing = false;
                     initListener.onInitError(databaseError.getMessage());
                 }
 
@@ -54,6 +54,7 @@ public class ChannelHandler {
     }
 
 
+
     private void BuildChannels(HashMap channelsHolder) {
         Iterator it = channelsHolder.entrySet().iterator();
         while (it.hasNext()) {
@@ -61,7 +62,6 @@ public class ChannelHandler {
             updateChannel((String) pair.getKey(), (HashMap) pair.getValue());
         }
     }
-
 
     /**
      * Will add entry if doesn't exists. Will update if exists.
@@ -82,5 +82,9 @@ public class ChannelHandler {
 
     public HashMap<String, Channel> getChannels() {
         return channels;
+    }
+
+    public boolean isInitializing() {
+        return initializing;
     }
 }
