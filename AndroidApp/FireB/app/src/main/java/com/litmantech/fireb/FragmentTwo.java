@@ -1,14 +1,20 @@
 package com.litmantech.fireb;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.common.SignInButton;
@@ -30,6 +36,8 @@ public class FragmentTwo extends Fragment implements View.OnClickListener, Messa
     private Button backButton;
     private DatabaseHandler dbHolder;
     private MessageRecyclerAdapter adapter;
+    private EditText editText;
+    private Button sendButton;
 
 
     public void setSelectedChannel(Channel channel) {
@@ -42,19 +50,34 @@ public class FragmentTwo extends Fragment implements View.OnClickListener, Messa
 
         TextView text2 = (TextView) view.findViewById(R.id.textView2);
         backButton = (Button) view.findViewById(R.id.back_button);
+        sendButton = (Button) view.findViewById(R.id.send_button);
+        editText = (EditText) view.findViewById(R.id.editText);
+
         backButton.setOnClickListener(this);
+        sendButton.setOnClickListener(this);
 
         mRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView2);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        text2.setText("you are in the \n"+mChannel.getTitle()+"\n\nChannel\n\n\n Press back button to go back");
+        text2.setText("Channel:"+mChannel.getTitle());
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if ((keyEvent != null && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_SEND)) {
+
+                    sendEditTextMessage();
+                }
+                return false;
+            }
+        });
+
         dbHolder = ((MainActivity)this.getActivity()).getDatabaseHandler();
         dbHolder.setMessageEventListener(this);
         dbHolder.initMessages(mChannel, new DatabaseInitListener(){
@@ -63,7 +86,6 @@ public class FragmentTwo extends Fragment implements View.OnClickListener, Messa
             public void onInitComplete() {
                 adapter = new MessageRecyclerAdapter(FragmentTwo.this.getActivity(),dbHolder.getMessages());
                 mRecyclerView.setAdapter(adapter);
-                dbHolder.pushMessage("hello testing1");
 
             }
 
@@ -80,7 +102,26 @@ public class FragmentTwo extends Fragment implements View.OnClickListener, Messa
             case R.id.back_button:
                 backPressed();
                 break;
+            case R.id.send_button:
+                sendEditTextMessage();
         }
+    }
+
+    private void sendEditTextMessage() {
+        String message = editText.getText().toString();
+        if(message.isEmpty()) return;
+
+        editText.setText("");
+
+        InputMethodManager imm = (InputMethodManager)this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
+        sendMessage(message);
+
+    }
+
+    private void sendMessage(String message){
+        dbHolder.pushMessage(message);
     }
 
     private void backPressed() {
