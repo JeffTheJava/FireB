@@ -81,4 +81,8 @@ public class DatabaseHandler {
         //messagesHandler.pushMessage(message);
 
     }
+
+    public void newChannel(String channelName,String topic) {
+        channelHandler.newChannel(channelName,topic);
+    }
 }

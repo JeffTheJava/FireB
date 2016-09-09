@@ -2,9 +2,9 @@ package com.litmantech.fireb;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,35 +16,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.Firebase;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.litmantech.fireb.database.DatabaseHandler;
 import com.litmantech.fireb.database.DatabaseInitListener;
 import com.litmantech.fireb.database.channels.Channel;
 import com.litmantech.fireb.database.channels.ChannelEventListener;
 import com.litmantech.fireb.database.channels.ChannelRecyclerAdapter;
+import com.litmantech.fireb.database.channels.NewChannelDialogFragment;
 import com.litmantech.fireb.login.LoginHandler;
 import com.litmantech.fireb.login.SignInListener;
 
 /**
  * Created by Jeff_Dev_PC on 9/6/2016.
  */
-public class FragmentMain extends Fragment implements View.OnClickListener, SignInListener, ChannelEventListener, ChannelRecyclerAdapter.OnChannelClickListener {
+public class FragmentMain extends Fragment implements View.OnClickListener, SignInListener, ChannelEventListener, ChannelRecyclerAdapter.OnChannelClickListener , NewChannelDialogFragment.UserNameListener{
 
     private static final String TAG = FragmentMain.class.getSimpleName();
     private FirebaseUser mUser;
@@ -56,6 +42,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
     private LoginHandler mLoginHandler;
     private ChannelRecyclerAdapter adapter;
     private DatabaseHandler dbHolder;
+    private Button newChannelButton;
 
 
     @Override
@@ -73,6 +60,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         signInButton = (SignInButton) view.findViewById(R.id.sign_in_button);
         signOutButton = (Button) view.findViewById(R.id.sign_out_button);
         dataTextView = (TextView) view.findViewById(R.id.textView);
+        newChannelButton = (Button) view.findViewById(R.id.new_channel);
+
 
         mRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -80,6 +69,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
 
         signInButton.setOnClickListener(this);
         signOutButton.setOnClickListener(this);
+        newChannelButton.setOnClickListener(this);
 
         updateUI();
 
@@ -127,7 +117,16 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
             case R.id.sign_out_button:
                 mLoginHandler.signOut();
                 break;
+            case R.id.new_channel:
+                newChannel();
         }
+    }
+
+    private void newChannel() {
+        FragmentManager manager = getFragmentManager();
+        NewChannelDialogFragment editNameDialog = new NewChannelDialogFragment();
+        editNameDialog.setUserNameListener(this);
+        editNameDialog.show(manager, "fragment_edit_name");
     }
 
     @Override
@@ -198,5 +197,11 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         ft.addToBackStack(FragmentTwo.TAG);//allow the back button to pop the fragment stack
         ft.replace(R.id.fragment_layout, fragmentTwo,FragmentTwo.TAG);
         ft.commit();
+    }
+
+    @Override
+    public void onFinishUserDialog(String channelName, String channelTopic) {
+        Toast.makeText(this.getActivity(), "Hello, " + channelName, Toast.LENGTH_SHORT).show();
+        dbHolder.newChannel(channelName,channelTopic);
     }
 }

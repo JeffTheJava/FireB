@@ -130,8 +130,10 @@ public class FragmentTwo extends Fragment implements View.OnClickListener, Messa
 
     @Override
     public void onMessageDataChanged() {
-        mRecyclerView.scrollToPosition(adapter.getItemCount()-1);
-        mRecyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+        if(adapter.getItemCount() > 0) {
+            mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            mRecyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+        }
         adapter.notifyDataSetChanged();
     }
 

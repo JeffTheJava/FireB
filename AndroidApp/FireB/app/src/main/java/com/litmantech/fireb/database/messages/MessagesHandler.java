@@ -73,6 +73,7 @@ public class MessagesHandler {
 
     private void BuildMessages(ArrayList messageHolder) {
         messages.clear();
+        if(messageHolder == null) return;
         Iterator it = messageHolder.iterator();
         while (it.hasNext()) {
             updateMessage((HashMap) it.next());
@@ -115,7 +116,7 @@ public class MessagesHandler {
     }
 
     public void pushMessageOldSchool(String messageString, int position) {
-        long timeU = System.currentTimeMillis();
+        long timeU = System.currentTimeMillis()/1000;
         Message message  = new Message(mUser.getDisplayName(),timeU,messageString);
 
         dbMessages.child(""+position).child(Message.AUTHOR_KEY).setValue(message.getAuthor());

@@ -6,6 +6,7 @@ package com.litmantech.fireb.database.channels;
 public class Channel {
     public static final String CREATED_KEY = "created";
     public static final String TITLE_KEY = "title";
+    public static final String TOPIC_KEY = "topic";
     private final String mKey;
     private final long mCreated;
     private final String mTitle;

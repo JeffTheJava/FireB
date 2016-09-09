@@ -5,6 +5,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.litmantech.fireb.database.DatabaseInitListener;
+import com.litmantech.fireb.database.messages.Message;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,14 +17,18 @@ public class ChannelHandler {
     private boolean initializing = false;
     private ChannelEventListener mChannelEventListener;
     private final HashMap<String,Channel> channels = new HashMap<>();
+    private DatabaseReference dbChannels;
+    private DatabaseReference dbRoot;
 
 
     public void init(DatabaseReference db, final DatabaseInitListener initListener) {
         initializing = true;
-        DatabaseReference dbChannels = db.child("channels");
+        dbRoot = db;
+        dbChannels = db.child("channels");
         dbChannels.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                channels.clear();
                 HashMap<String,Object> channelsHolder = (HashMap<String, Object>) dataSnapshot.getValue();
                 BuildChannels(channelsHolder);
                 if(initializing){//TODO i don't like this if statement i dont know how to fix it yet. will get back to it.
@@ -69,10 +74,13 @@ public class ChannelHandler {
      * @param value
      */
     public void updateChannel(String key,  HashMap<String,Object> value) {
-        long created = (long) value.get(Channel.CREATED_KEY);
-        String title = (String) value.get(Channel.TITLE_KEY);
+        Object created =  value.get(Channel.CREATED_KEY);
+        if(created == null) return;
 
-        Channel channel = new Channel(key,created,title);
+        Object title = value.get(Channel.TITLE_KEY);
+        if(title == null) return;
+
+        Channel channel = new Channel(key,(long)created,(String)title);
         channels.put(key,channel);
     }
 
@@ -86,5 +94,20 @@ public class ChannelHandler {
 
     public boolean isInitializing() {
         return initializing;
+    }
+
+    public void newChannel(String channelName, String topic) {
+        if(channelName.isEmpty()) return;
+        if(topic.isEmpty()) return;
+
+        long timeU = System.currentTimeMillis()/1000;
+
+        String channelKey = channelName.replaceAll(" ","_");
+
+        dbChannels.child(channelKey).child(Channel.TITLE_KEY).setValue(channelName);
+        dbChannels.child(channelKey).child(Channel.CREATED_KEY).setValue(timeU);
+
+        dbRoot.child("c:"+channelKey).child(Channel.TOPIC_KEY).setValue(topic);
+
     }
 }
