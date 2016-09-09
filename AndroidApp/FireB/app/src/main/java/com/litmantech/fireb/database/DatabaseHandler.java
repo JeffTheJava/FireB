@@ -2,6 +2,9 @@ package com.litmantech.fireb.database;
 
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +37,8 @@ public class DatabaseHandler {
     public DatabaseHandler(){
         db = FirebaseDatabase.getInstance().getReference();
         channelHandler = new ChannelHandler();
-        messagesHandler = new MessagesHandler(db);
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        messagesHandler = new MessagesHandler(db,mUser);
     }
 
     /**
@@ -70,5 +74,11 @@ public class DatabaseHandler {
 
     public ArrayList<Message> getMessages() {
         return messagesHandler.getMessages();
+    }
+
+    public void pushMessage(String message) {
+        messagesHandler.pushMessageOldSchool(message,messagesHandler.getMessages().size());
+        //messagesHandler.pushMessage(message);
+
     }
 }

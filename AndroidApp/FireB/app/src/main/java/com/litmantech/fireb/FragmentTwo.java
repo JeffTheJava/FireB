@@ -63,6 +63,7 @@ public class FragmentTwo extends Fragment implements View.OnClickListener, Messa
             public void onInitComplete() {
                 adapter = new MessageRecyclerAdapter(FragmentTwo.this.getActivity(),dbHolder.getMessages());
                 mRecyclerView.setAdapter(adapter);
+                dbHolder.pushMessage("hello testing1");
 
             }
 
@@ -88,6 +89,8 @@ public class FragmentTwo extends Fragment implements View.OnClickListener, Messa
 
     @Override
     public void onMessageDataChanged() {
+        mRecyclerView.scrollToPosition(adapter.getItemCount()-1);
+        mRecyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
         adapter.notifyDataSetChanged();
     }
 
