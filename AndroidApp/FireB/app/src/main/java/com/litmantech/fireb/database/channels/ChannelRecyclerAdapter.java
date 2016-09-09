@@ -22,6 +22,8 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
     final HashMap<String,Channel> mChannels;
     private final LayoutInflater mInflater;
     private final PrettyTime mPrettyTime;
+    private OnChannelClickListener mOnChannelClickListener;
+    private String mHighlightChannelKey = "";
 
     public ChannelRecyclerAdapter(Context context, HashMap<String, Channel> channels){
         this.mChannels = channels;
@@ -38,8 +40,18 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
     @Override
     public void onBindViewHolder(ChannelViewHolder holder, int position) {
-        Channel channel = (Channel) mChannels.values().toArray()[position];
+        final Channel channel = (Channel) mChannels.values().toArray()[position];
         holder.setData(channel);
+        holder.getItemView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChannelRecyclerAdapter.this.setHighlightedItemKey(channel.getKey());
+                if (mOnChannelClickListener != null) {
+                    mOnChannelClickListener.onChannelClick(channel);
+                    notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     @Override
@@ -47,18 +59,37 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
         return mChannels.size();
     }
 
+    public void setOnChannelClickListener(OnChannelClickListener onChannelClickListener){
+        this.mOnChannelClickListener = onChannelClickListener;
+    }
+
     public void cleanup() {
         mChannels.clear();
+        clearHighlightChannelKey();
         this.notifyDataSetChanged();
     }
 
+    private void clearHighlightChannelKey() {
+        setHighlightedItemKey("");
+    }
+
+    public void setHighlightedItemKey(String highlightedItemKey) {
+        this.mHighlightChannelKey = highlightedItemKey;
+    }
+
+    public interface OnChannelClickListener {
+        void onChannelClick(Channel channel);
+    }
 
     class ChannelViewHolder extends  RecyclerView.ViewHolder{
         private final TextView mTitle;
         private final TextView mDate;
+        private final View mitemView;
+        private String mKey = "";
 
         public ChannelViewHolder(View itemView){
             super(itemView);
+            this.mitemView = itemView;
             this.mTitle = (TextView) itemView.findViewById(android.R.id.text1);
             this.mDate = (TextView) itemView.findViewById(android.R.id.text2);
 
@@ -68,7 +99,12 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
             mTitle.setText(data.getTitle());
             //mDate.setText(getDate(data.getCreated(), "dd/MM/yyyy hh:mm:ss"));
             mDate.setText(mPrettyTime.format(new Date(data.getCreated()*1000))+" ... "+getDate(data.getCreated(), "hh:mm:ss dd/MM/yyyy"));
+            mKey = data.getKey();
+            highlightBackground();
+        }
 
+        public View getItemView() {
+            return mitemView;
         }
 
         public String getDate(long milliSeconds, String dateFormat) {
@@ -77,6 +113,15 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(milliSeconds*1000);//convert from unix time
             return formatter.format(calendar.getTime());
+        }
+
+        private void highlightBackground() {
+            String currentHighlightedKey = ChannelRecyclerAdapter.this.mHighlightChannelKey;
+            if(!currentHighlightedKey.isEmpty() && currentHighlightedKey.contentEquals(mKey)) {
+                mitemView.setBackgroundColor(mitemView.getContext().getResources().getColor(android.support.v7.appcompat.R.color.highlighted_text_material_dark));
+            }else{
+                mitemView.setBackgroundColor(0);
+            }
         }
 
     }

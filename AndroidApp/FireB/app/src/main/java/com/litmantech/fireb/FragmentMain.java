@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.litmantech.fireb.database.DatabaseHandler;
 import com.litmantech.fireb.database.DatabaseInitListener;
+import com.litmantech.fireb.database.channels.Channel;
 import com.litmantech.fireb.database.channels.ChannelEventListener;
 import com.litmantech.fireb.database.channels.ChannelRecyclerAdapter;
 import com.litmantech.fireb.login.LoginHandler;
@@ -42,7 +44,7 @@ import com.litmantech.fireb.login.SignInListener;
 /**
  * Created by Jeff_Dev_PC on 9/6/2016.
  */
-public class FragmentMain extends Fragment implements View.OnClickListener, SignInListener, ChannelEventListener {
+public class FragmentMain extends Fragment implements View.OnClickListener, SignInListener, ChannelEventListener, ChannelRecyclerAdapter.OnChannelClickListener {
 
     private static final String TAG = FragmentMain.class.getSimpleName();
     private FirebaseUser mUser;
@@ -103,6 +105,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
             @Override
             public void onInitComplete() {
                 adapter = new ChannelRecyclerAdapter(FragmentMain.this.getActivity(),dbHolder.getChannels());
+                adapter.setOnChannelClickListener(FragmentMain.this);
                 mRecyclerView.setAdapter(adapter);
                 updateUI();
             }
@@ -182,5 +185,17 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
     @Override
     public void onChannelCancelled(String message) {
         updateUI();
+    }
+
+    @Override
+    public void onChannelClick(Channel channel) {
+        Log.e("testing",channel.getTitle());
+
+        FragmentTransaction ft = this.getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTwo fragmentTwo = new FragmentTwo();
+        fragmentTwo.setSelectedChannel(channel);
+        ft.addToBackStack(FragmentTwo.TAG);//allow the back button to pop the fragment stack
+        ft.replace(R.id.fragment_layout, fragmentTwo,FragmentTwo.TAG);
+        ft.commit();
     }
 }

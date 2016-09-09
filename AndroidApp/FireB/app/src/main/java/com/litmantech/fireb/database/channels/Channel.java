@@ -16,7 +16,7 @@ public class Channel {
         mTitle = title;
     }
 
-    public String getmKey() {
+    public String getKey() {
         return mKey;
     }
 
