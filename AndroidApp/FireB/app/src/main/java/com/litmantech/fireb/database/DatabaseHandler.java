@@ -9,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.litmantech.fireb.database.channels.Channel;
 import com.litmantech.fireb.database.channels.ChannelEventListener;
+import com.litmantech.fireb.database.channels.ChannelHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,87 +22,40 @@ import java.util.Objects;
  */
 public class DatabaseHandler {
     private final DatabaseReference db;
-    private final HashMap<String,Channel> channels = new HashMap<>();
+    private final ChannelHandler channelHandler;
     private boolean isInitializing = false;
-    private ChannelEventListener mChannelEventListener;
 
     /**
      * Do not instantiate  this object unless you have successfully logged in
      */
     public DatabaseHandler(){
-         db = FirebaseDatabase.getInstance().getReference();
+        db = FirebaseDatabase.getInstance().getReference();
+        channelHandler = new ChannelHandler();
     }
 
     /**
      * this is safe to call as many times as you want. if we are already init then it will do nothing.
      * @param initListener
      */
-    public void initChannels(final DatabaseInitListener initListener){
+    public void initChannels(DatabaseInitListener initListener){
         //check if we have already initialized if so the just return
-        if(!channels.isEmpty()) return;
+        if(!channelHandler.getChannels().isEmpty()) return;
         if(isInitializing) return;
 
-        isInitializing = true;
-        DatabaseReference dbChannels = db.child("channels");
-        dbChannels.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String,Object> channelsHolder = (HashMap<String, Object>) dataSnapshot.getValue();
-                BuildChannels(channelsHolder);
-                if(isInitializing){//TODO i don't like this if statement i dont know how to fix it yet. will get back to it.
-                    initListener.onInitComplete();
-                    isInitializing = false;
-                }
-
-                if(mChannelEventListener !=null){
-                    mChannelEventListener.onChannelDataChanged();
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                if(isInitializing){
-                    isInitializing = false;
-                    initListener.onInitError(databaseError.getMessage());
-                }
-
-                if(mChannelEventListener !=null){
-                    mChannelEventListener.onChannelCancelled(databaseError.getMessage());
-                }
-            }
-        });
-
+        channelHandler.init(db,initListener);
     }
 
-    private void BuildChannels(HashMap channelsHolder) {
-        Iterator it = channelsHolder.entrySet().iterator();
-        while (it.hasNext()) {
-            HashMap.Entry pair = (HashMap.Entry)it.next();
-            updateChannel((String) pair.getKey(), (HashMap) pair.getValue());
-        }
-    }
 
-    /**
-     * Will add entry if doesn't exists. Will update if exists.
-     * @param key
-     * @param value
-     */
-    public void updateChannel(String key,  HashMap<String,Object> value) {
-        long created = (long) value.get(Channel.CREATED_KEY);
-        String title = (String) value.get(Channel.TITLE_KEY);
-
-        Channel channel = new Channel(key,created,title);
-        channels.put(key,channel);
-    }
 
     public HashMap<String,Channel> getChannels() {
-        return channels;
+        return channelHandler.getChannels();
     }
 
     public void setChannelEventListener(ChannelEventListener channelEventListener) {
-        this.mChannelEventListener = channelEventListener;
+        channelHandler.setChannelEventListener(channelEventListener);
+    }
+
+    public void initMessages(Channel mChannel) {
+
     }
 }

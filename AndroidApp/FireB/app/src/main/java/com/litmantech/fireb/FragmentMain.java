@@ -54,8 +54,9 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
     private Button signOutButton;
     private TextView dataTextView;
     private LoginHandler mLoginHandler;
-    private DatabaseHandler dbHolder;
     private ChannelRecyclerAdapter adapter;
+    private DatabaseHandler dbHolder;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,8 +64,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
 
         mLoginHandler = new LoginHandler(this.getActivity());
         mLoginHandler.setSignInListener(this);
-
-        dbHolder = new DatabaseHandler();
     }
 
     @Override
@@ -90,6 +89,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
     @Override
     public void onResume() {
         super.onResume();
+        dbHolder = ((MainActivity)this.getActivity()).getDatabaseHandler();
+
         if(mLoginHandler.isLoggedIn()){
             mUser = mLoginHandler.getUser();
             initChannelDataBase();
