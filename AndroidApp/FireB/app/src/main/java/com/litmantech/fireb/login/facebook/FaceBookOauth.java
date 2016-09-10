@@ -1,5 +1,6 @@
 package com.litmantech.fireb.login.facebook;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
@@ -13,7 +14,7 @@ import com.litmantech.fireb.login.OAuth;
  */
 public class FaceBookOauth implements OAuth {
     @Override
-    public void signIn(Fragment activityForResult) {
+    public void signIn(Activity activityForResult) {
 
     }
 

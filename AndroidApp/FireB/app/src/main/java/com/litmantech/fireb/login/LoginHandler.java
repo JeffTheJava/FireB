@@ -56,7 +56,7 @@ public class LoginHandler {
      *
      * @param activityForResult
      */
-    public void SignInGoogle(Fragment activityForResult) {
+    public void SignInGoogle(Activity activityForResult) {
         if(oAuth == null) {
             oAuth = new GoogleOauth(mContext);
         }

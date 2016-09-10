@@ -1,5 +1,6 @@
 package com.litmantech.fireb.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
@@ -15,7 +16,7 @@ public interface OAuth {
      *
      * @param activityForResult The fragment you wish to have return the data
      */
-    void signIn(Fragment activityForResult);
+    void signIn(Activity activityForResult);
 
     void signOut(ResultCallback<Status> resultCallback);
 

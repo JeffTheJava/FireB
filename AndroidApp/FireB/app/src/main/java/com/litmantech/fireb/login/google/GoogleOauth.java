@@ -1,5 +1,6 @@
 package com.litmantech.fireb.login.google;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -38,7 +39,7 @@ public class GoogleOauth implements OAuth, GoogleApiClient.OnConnectionFailedLis
     }
 
     @Override
-    public void signIn(Fragment activityForResult) {
+    public void signIn(Activity activityForResult) {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         activityForResult.startActivityForResult(signInIntent, LoginHandler.SIGN_IN_CODE);
     }

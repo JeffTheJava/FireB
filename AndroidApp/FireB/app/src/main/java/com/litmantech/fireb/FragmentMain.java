@@ -84,10 +84,17 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         if(mLoginHandler.isLoggedIn()){
             mUser = mLoginHandler.getUser();
             initChannelDataBase();
-
+        }else{
+            GoToLoginScreen();
         }
         updateUI();
 
+    }
+
+    private void GoToLoginScreen() {
+        Intent myIntent = new Intent(this.getActivity(), LoginActivity.class);
+        this.getActivity().startActivity(myIntent);
+        this.getActivity().finish();
     }
 
     private void initChannelDataBase() {
@@ -112,7 +119,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.sign_in_button:
-                mLoginHandler.SignInGoogle(this);
                 break;
             case R.id.sign_out_button:
                 mLoginHandler.signOut();
@@ -129,13 +135,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         editNameDialog.show(manager, "fragment_edit_name");
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LoginHandler.SIGN_IN_CODE){
-            mLoginHandler.onSignInResult(data);
-        }
-    }
+
 
     @Override
     public void onSignInSuccessful() {
@@ -148,6 +148,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
     public void onSignInFail() {
         Toast.makeText(getActivity(), "Authentication failed.",Toast.LENGTH_SHORT).show();
         updateUI();
+        GoToLoginScreen();
+
     }
 
     @Override
@@ -157,6 +159,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         }
         Toast.makeText(getActivity(), "SignOut.",Toast.LENGTH_SHORT).show();
         updateUI();
+        GoToLoginScreen();
     }
 
     private void updateUI() {
@@ -201,7 +204,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
 
     @Override
     public void onFinishUserDialog(String channelName, String channelTopic) {
-        Toast.makeText(this.getActivity(), "Hello, " + channelName, Toast.LENGTH_SHORT).show();
         dbHolder.newChannel(channelName,channelTopic);
     }
 }
