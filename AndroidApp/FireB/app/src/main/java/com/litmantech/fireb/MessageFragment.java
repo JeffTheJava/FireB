@@ -28,8 +28,8 @@ import com.litmantech.fireb.login.LoginHandler;
 /**
  * Created by Jeff_Dev_PC on 9/8/2016.
  */
-public class FragmentTwo extends Fragment implements View.OnClickListener, MessageEventListener {
-    public static final String TAG = "FragmentTwo";
+public class MessageFragment extends Fragment implements View.OnClickListener, MessageEventListener {
+    public static final String TAG = "MessageFragment";
     private RecyclerView mRecyclerView;
 
     private Channel mChannel;
@@ -84,7 +84,7 @@ public class FragmentTwo extends Fragment implements View.OnClickListener, Messa
 
             @Override
             public void onInitComplete() {
-                adapter = new MessageRecyclerAdapter(FragmentTwo.this.getActivity(),dbHolder.getMessages());
+                adapter = new MessageRecyclerAdapter(MessageFragment.this.getActivity(),dbHolder.getMessages());
                 mRecyclerView.setAdapter(adapter);
 
             }

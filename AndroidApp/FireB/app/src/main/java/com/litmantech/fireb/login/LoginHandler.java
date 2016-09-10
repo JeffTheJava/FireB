@@ -19,7 +19,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.litmantech.fireb.FragmentMain;
 import com.litmantech.fireb.login.google.GoogleOauth;
 
 /**

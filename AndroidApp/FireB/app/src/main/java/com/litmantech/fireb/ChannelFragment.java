@@ -30,9 +30,9 @@ import com.litmantech.fireb.login.SignInListener;
 /**
  * Created by Jeff_Dev_PC on 9/6/2016.
  */
-public class FragmentMain extends Fragment implements View.OnClickListener, SignInListener, ChannelEventListener, ChannelRecyclerAdapter.OnChannelClickListener , NewChannelDialogFragment.UserNameListener{
+public class ChannelFragment extends Fragment implements View.OnClickListener, SignInListener, ChannelEventListener, ChannelRecyclerAdapter.OnChannelClickListener , NewChannelDialogFragment.UserNameListener{
 
-    private static final String TAG = FragmentMain.class.getSimpleName();
+    private static final String TAG = ChannelFragment.class.getSimpleName();
     private FirebaseUser mUser;
 
     private RecyclerView mRecyclerView;
@@ -102,8 +102,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         dbHolder.initChannels(new DatabaseInitListener() {
             @Override
             public void onInitComplete() {
-                adapter = new ChannelRecyclerAdapter(FragmentMain.this.getActivity(),dbHolder.getChannels());
-                adapter.setOnChannelClickListener(FragmentMain.this);
+                adapter = new ChannelRecyclerAdapter(ChannelFragment.this.getActivity(),dbHolder.getChannels());
+                adapter.setOnChannelClickListener(ChannelFragment.this);
                 mRecyclerView.setAdapter(adapter);
                 updateUI();
             }
@@ -195,10 +195,10 @@ public class FragmentMain extends Fragment implements View.OnClickListener, Sign
         Log.e("testing",channel.getTitle());
 
         FragmentTransaction ft = this.getActivity().getSupportFragmentManager().beginTransaction();
-        FragmentTwo fragmentTwo = new FragmentTwo();
-        fragmentTwo.setSelectedChannel(channel);
-        ft.addToBackStack(FragmentTwo.TAG);//allow the back button to pop the fragment stack
-        ft.replace(R.id.fragment_layout, fragmentTwo,FragmentTwo.TAG);
+        MessageFragment messageFragment = new MessageFragment();
+        messageFragment.setSelectedChannel(channel);
+        ft.addToBackStack(MessageFragment.TAG);//allow the back button to pop the fragment stack
+        ft.replace(R.id.fragment_layout, messageFragment,MessageFragment.TAG);
         ft.commit();
     }
 

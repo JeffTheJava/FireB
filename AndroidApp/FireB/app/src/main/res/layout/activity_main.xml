@@ -16,7 +16,7 @@
 
         <fragment
             android:id="@+id/titles"
-            class="com.litmantech.fireb.FragmentMain"
+            class="com.litmantech.fireb.ChannelFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/fragment_main" />
