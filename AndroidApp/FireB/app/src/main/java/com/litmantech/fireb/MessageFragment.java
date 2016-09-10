@@ -1,5 +1,6 @@
 package com.litmantech.fireb;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,6 +39,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
     private MessageRecyclerAdapter adapter;
     private EditText editText;
     private Button sendButton;
+    private ProgressDialog progress;
 
 
     public void setSelectedChannel(Channel channel) {
@@ -78,6 +80,16 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
             }
         });
 
+        initDB();
+    }
+
+    private void initDB() {
+        progress = new ProgressDialog(this.getActivity());
+        progress.setMessage("loading...");
+        progress.setCancelable(false);
+        progress.setCanceledOnTouchOutside(false);
+        progress.show();
+
         dbHolder = ((MainActivity)this.getActivity()).getDatabaseHandler();
         dbHolder.setMessageEventListener(this);
         dbHolder.initMessages(mChannel, new DatabaseInitListener(){
@@ -86,14 +98,20 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
             public void onInitComplete() {
                 adapter = new MessageRecyclerAdapter(MessageFragment.this.getActivity(),dbHolder.getMessages());
                 mRecyclerView.setAdapter(adapter);
+                progress.dismiss();
 
             }
 
             @Override
             public void onInitError(String message) {
+                progress.dismiss();
 
             }
         });
+        if(dbHolder.isMessagesInit()){
+            progress.dismiss();
+        }
+
     }
 
     @Override
@@ -135,6 +153,9 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
             mRecyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
         }
         adapter.notifyDataSetChanged();
+        if(progress!=null){
+            progress.dismiss();
+        }
     }
 
     @Override

@@ -85,4 +85,13 @@ public class DatabaseHandler {
     public void newChannel(String channelName,String topic) {
         channelHandler.newChannel(channelName,topic);
     }
+
+    public boolean isChannelInit() {
+        return !channelHandler.getChannels().isEmpty();
+    }
+
+    public boolean isMessagesInit() {
+        return messagesHandler.isInit();
+    }
+
 }

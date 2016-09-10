@@ -132,4 +132,7 @@ public class MessagesHandler {
         return false;
     }
 
+    public boolean isInit() {
+        return messages.isEmpty();
+    }
 }

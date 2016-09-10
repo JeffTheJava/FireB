@@ -1,5 +1,6 @@
 package com.litmantech.fireb;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -43,6 +44,7 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
     private ChannelRecyclerAdapter adapter;
     private DatabaseHandler dbHolder;
     private Button newChannelButton;
+    private ProgressDialog progress;
 
 
     @Override
@@ -98,6 +100,12 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
     }
 
     private void initChannelDataBase() {
+        progress = new ProgressDialog(this.getActivity());
+        progress.setMessage("loading...");
+        progress.setCancelable(false);
+        progress.setCanceledOnTouchOutside(false);
+        progress.show();
+
         dbHolder.setChannelEventListener(this);
         dbHolder.initChannels(new DatabaseInitListener() {
             @Override
@@ -105,14 +113,19 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
                 adapter = new ChannelRecyclerAdapter(ChannelFragment.this.getActivity(),dbHolder.getChannels());
                 adapter.setOnChannelClickListener(ChannelFragment.this);
                 mRecyclerView.setAdapter(adapter);
+                progress.dismiss();
                 updateUI();
             }
 
             @Override
             public void onInitError(String message) {
+                progress.dismiss();
                 updateUI();
             }
         });
+        if(dbHolder.isChannelInit()){
+            progress.dismiss();
+        }
     }
 
     @Override
@@ -182,6 +195,9 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
 
     @Override
     public void onChannelDataChanged() {
+        if(progress!=null){
+            progress.dismiss();
+        }
         updateUI();
     }
 
