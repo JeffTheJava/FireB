@@ -98,7 +98,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
         public void setData(Channel data) {
             mTitle.setText(data.getTitle());
             //mDate.setText(getDate(data.getCreated(), "dd/MM/yyyy hh:mm:ss"));
-            mDate.setText(mPrettyTime.format(new Date(data.getCreated()*1000))+" ... "+getDate(data.getCreated(), "hh:mm:ss dd/MM/yyyy"));
+            mDate.setText(mPrettyTime.format(new Date(data.getCreated()*1000))+" ... "+getDate(data.getCreated(), "hh:mm:ss dd/MM/yyyy")+"\n\n");
             mKey = data.getKey();
             highlightBackground();
         }

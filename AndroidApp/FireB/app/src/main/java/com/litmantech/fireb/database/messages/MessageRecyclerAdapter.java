@@ -10,7 +10,12 @@ import android.widget.TextView;
 
 import com.litmantech.fireb.database.channels.Channel;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Jeff_Dev_PC on 9/9/2016.
@@ -21,11 +26,13 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
     private final ArrayList<Message> mMessages;
     private final Context mContext;
     private final LayoutInflater mInflater;
+    private final PrettyTime mPrettyTime;
 
     public MessageRecyclerAdapter(Context context, ArrayList<Message> messages) {
         this.mMessages = messages;
         this.mInflater = LayoutInflater.from(context);
         this.mContext = context;
+        mPrettyTime = new PrettyTime();
     }
 
     @Override
@@ -72,7 +79,32 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
 
         public void setData(Message data) {
             mAuthor.setText(data.getAuthor());
-            mMessage.setText(data.getMessage());
+            String mMessageString = data.getMessage();
+            long timeholder = convertTimeIfNeeded(data.getCreated());
+
+            String mTime = mPrettyTime.format(new Date(timeholder))+" ... "+getDate(timeholder, "hh:mm:ss dd/MM/yyyy");
+            mMessage.setText(mMessageString+"\n"+mTime+"\n\n");
+        }
+
+
+
+        public String getDate(long milliSeconds, String dateFormat) {
+            SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(milliSeconds);
+            return formatter.format(calendar.getTime());
+        }
+
+        //convert from unix time
+        private long convertTimeIfNeeded(long time) {
+            int length = String.valueOf(time).length();
+
+            if(length<= 10){
+                return time*1000;
+            }else{
+                return time;
+            }
         }
     }
 }

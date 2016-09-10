@@ -27,6 +27,7 @@ public class MessagesHandler {
     private MessageEventListener messageEventListener;
     private DatabaseReference dbMessagesRoot;
     private DatabaseReference dbMessages;
+    private String messageTopic = "";
 
 
     public MessagesHandler(DatabaseReference databaseReference, FirebaseUser user) {
@@ -39,6 +40,8 @@ public class MessagesHandler {
         String mMessagesKey = "c:"+mChannel.getKey();
         dbMessagesRoot = db.child(mMessagesKey);
         dbMessages = dbMessagesRoot.child("messages");
+        setTopicListener();
+
         dbMessages.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -67,6 +70,20 @@ public class MessagesHandler {
                 if(messageEventListener !=null){
                     messageEventListener.onMessageCancelled(databaseError.getMessage());
                 }
+            }
+        });
+    }
+
+    private void setTopicListener() {
+        dbMessagesRoot.child("topic").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                messageTopic = dataSnapshot.getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
@@ -134,5 +151,9 @@ public class MessagesHandler {
 
     public boolean isInit() {
         return messages.isEmpty();
+    }
+
+    public String getMessageTopic() {
+        return messageTopic;
     }
 }

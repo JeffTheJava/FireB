@@ -94,4 +94,7 @@ public class DatabaseHandler {
         return messagesHandler.isInit();
     }
 
+    public String getMessageTopic() {
+        return messagesHandler.getMessageTopic();
+    }
 }

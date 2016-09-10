@@ -40,6 +40,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
     private EditText editText;
     private Button sendButton;
     private ProgressDialog progress;
+    private TextView label;
 
 
     public void setSelectedChannel(Channel channel) {
@@ -50,7 +51,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_two, container, false);
 
-        TextView text2 = (TextView) view.findViewById(R.id.textView2);
+        label = (TextView) view.findViewById(R.id.textView2);
         backButton = (Button) view.findViewById(R.id.back_button);
         sendButton = (Button) view.findViewById(R.id.send_button);
         editText = (EditText) view.findViewById(R.id.editText);
@@ -62,7 +63,7 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        text2.setText("Channel:"+mChannel.getTitle());
+        label.setText("Welcome to\n"+mChannel.getTitle());
         return view;
     }
 
@@ -97,6 +98,8 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
             @Override
             public void onInitComplete() {
                 adapter = new MessageRecyclerAdapter(MessageFragment.this.getActivity(),dbHolder.getMessages());
+                String topic = dbHolder.getMessageTopic();
+                label.setText(label.getText()+"\n"+topic);
                 mRecyclerView.setAdapter(adapter);
                 progress.dismiss();
 
@@ -108,9 +111,6 @@ public class MessageFragment extends Fragment implements View.OnClickListener, M
 
             }
         });
-        if(dbHolder.isMessagesInit()){
-            progress.dismiss();
-        }
 
     }
 

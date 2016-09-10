@@ -54,11 +54,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void login() {
+        signInButton.setImageResource(R.drawable.common_google_signin_btn_icon_light_disabled);
+        signInButton.setEnabled(false);
         mLoginHandler.SignInGoogle(this);
     }
     @Override
     public void onSignInSuccessful() {
         Toast.makeText(this, "Authentication Worked.",Toast.LENGTH_SHORT).show();
+        signInButton.setImageResource(R.drawable.login);
+        signInButton.setEnabled(true);
         StartMainActivity();
     }
 
@@ -70,11 +74,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onSignInFail() {
+        signInButton.setImageResource(R.drawable.login);
+        signInButton.setEnabled(true);
         Toast.makeText(this, "Authentication failed.",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSignOut() {
-
+        signInButton.setImageResource(R.drawable.login);
+        signInButton.setEnabled(true);
     }
 }
