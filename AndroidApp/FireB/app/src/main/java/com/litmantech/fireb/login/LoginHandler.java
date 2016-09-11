@@ -1,16 +1,32 @@
+/******************************************************************************
+ Copyright (c) 2016, JeffmeJones & Litman Tech All rights reserved.
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+
+ Redistributions of source code must retain the above copyright notice, this list
+ of conditions and the following disclaimer. Redistributions in binary form must
+ reproduce the above copyright notice, this list of conditions and the following
+ disclaimer in the documentation and/or other materials provided with the
+ distribution. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+ OF SUCH DAMAGE.
+ ******************************************************************************/
 package com.litmantech.fireb.login;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +39,9 @@ import com.litmantech.fireb.login.google.GoogleOauth;
 
 /**
  * Created by Jeff_Dev_PC on 9/8/2016.
+ * This class is used to handle logging into firebase use google.
+ * If will soon be updated to log into facebook or use your email and password.
+ *
  */
 public class LoginHandler {
     private static final String TAG = "LoginHandler";
@@ -34,22 +53,33 @@ public class LoginHandler {
     private SignInListener signInListener;
     private LoginState mState;
 
+    /**
+     * state used to help with UI.
+     * Based off the the state of this handler you can choose how to update you buttons and text exc..
+     */
     public enum LoginState{
         SIGNED_IN, SIGNED_OUT, LOGGING_IN
     }
 
+    /**
+     *
+     * @param context
+     */
     public LoginHandler(Context context){
         mContext = context;
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        mState = LoginState.SIGNED_OUT;
+        if(mFirebaseUser == null){
+            mState = LoginState.SIGNED_OUT;
+        }else{
+            mState = LoginState.SIGNED_IN;
+        }
     }
 
-
-    public boolean isLoggedIn() {
-        return mFirebaseUser != null;
-    }
-
+    /**
+     *
+     * @return
+     */
     public FirebaseUser getUser() {
         return mFirebaseUser;
     }
@@ -62,6 +92,7 @@ public class LoginHandler {
      */
     public void SignInGoogle(Activity activityForResult) {
         mState = LoginState.LOGGING_IN;
+        mFirebaseUser = null;
         if(oAuth == null) {
             oAuth = new GoogleOauth(mContext);
         }
@@ -87,6 +118,7 @@ public class LoginHandler {
     private void SignOutFireBase() {
         mFirebaseAuth.signOut();
         mFirebaseUser = null;
+        mState = LoginState.SIGNED_OUT;
         signInListener.onSignOut();
     }
 
@@ -99,6 +131,7 @@ public class LoginHandler {
      */
     public void onSignInResult(Intent data) {
         mState = LoginState.LOGGING_IN;
+        mFirebaseUser = null;
         AuthCredential credential = oAuth.onSignInResult(data);
         if(credential == null){
             mState = LoginState.SIGNED_OUT;

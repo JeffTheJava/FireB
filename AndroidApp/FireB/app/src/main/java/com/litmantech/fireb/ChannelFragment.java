@@ -83,7 +83,7 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
         super.onResume();
         dbHolder = ((MainActivity)this.getActivity()).getDatabaseHandler();
 
-        if(mLoginHandler.isLoggedIn()){
+        if(mLoginHandler.getState() == LoginHandler.LoginState.SIGNED_IN){
             mUser = mLoginHandler.getUser();
             initChannelDataBase();
         }else{
@@ -177,7 +177,7 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
 
     private void updateUI() {
         mUser = mLoginHandler.getUser();
-        if(!mLoginHandler.isLoggedIn()){
+        if(mLoginHandler.getState() != LoginHandler.LoginState.SIGNED_IN){
             signInButton.setEnabled(true);
             signOutButton.setEnabled(false);
             dataTextView.setText("Please sign in!!");
