@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">FireB</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="logo_name">FireB Chat</string>
+
+    <string name="login_loading">Logging in please wait.....</string>
+    <string name="login_boot_message">The world\'s # 1 group chatting app!</string>
+    <string name="login_welcome">Welcome</string>
 </resources>

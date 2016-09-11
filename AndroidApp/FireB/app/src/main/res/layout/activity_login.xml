@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/back_color">
+    android:background="@color/back_color"
+    android:orientation="vertical">
 
 
     <RelativeLayout
@@ -11,32 +12,32 @@
         android:layout_weight="1">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
             android:id="@+id/imageView"
-            android:layout_centerVertical="true"
+            android:layout_width="@dimen/login_logo_width"
+            android:layout_height="@dimen/login_logo_height"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:src="@drawable/fireb_icon" />
 
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FireB Chat"
-            android:id="@+id/textView3"
             android:layout_below="@+id/imageView"
             android:layout_centerHorizontal="true"
-            android:textSize="50dp"
-            android:textColor="@android:color/white" />
+            android:text="@string/logo_name"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/login_logo_text_size" />
 
         <TextView
+            android:id="@+id/login_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="The worlds number one chat app!!"
-            android:id="@+id/textView4"
-            android:textSize="20dp"
-            android:textColor="@color/button_material_light"
             android:layout_below="@+id/textView3"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:text="@string/login_boot_message"
+            android:textColor="@color/button_material_light"
+            android:textSize="@dimen/login_message_text_size" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -45,14 +46,24 @@
         android:layout_weight="1">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
             android:id="@+id/login_button"
-            android:layout_centerVertical="true"
+            android:layout_width="300dp"
+            android:layout_height="@dimen/login_button_height"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/login"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/login_button_margin_all"
             android:scaleType="fitXY"
-            android:layout_margin="20dp" />
+            android:src="@drawable/login" />
+
+        <TextView
+            android:id="@+id/app_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:textColor="@color/button_material_light"
+            android:textSize="@dimen/app_info_text_size" />
 
     </RelativeLayout>
 </LinearLayout>

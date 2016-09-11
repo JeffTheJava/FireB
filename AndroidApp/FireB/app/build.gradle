@@ -8,8 +8,8 @@ android {
         applicationId "com.litmantech.fireb"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 9
+        versionName "0.5.2"
     }
     buildTypes {
         release {

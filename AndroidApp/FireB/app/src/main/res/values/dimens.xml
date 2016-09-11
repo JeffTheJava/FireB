@@ -3,4 +3,14 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="login_logo_width">100dp</dimen>
+    <dimen name="login_logo_height">100dp</dimen>
+    <dimen name="login_button_height">55dp</dimen>
+    <dimen name="login_button_margin_all">20dp</dimen>
+    <dimen name="login_logo_text_size">50dp</dimen>
+    <dimen name="login_message_text_size">20dp</dimen>
+    <dimen name="app_info_text_size">11dp</dimen>
+
+
 </resources>

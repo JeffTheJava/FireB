@@ -32,12 +32,17 @@ public class LoginHandler {
     private FirebaseAuth mFirebaseAuth;
     private OAuth oAuth;
     private SignInListener signInListener;
+    private LoginState mState;
 
+    public enum LoginState{
+        SIGNED_IN, SIGNED_OUT, LOGGING_IN
+    }
 
     public LoginHandler(Context context){
         mContext = context;
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        mState = LoginState.SIGNED_OUT;
     }
 
 
@@ -56,6 +61,7 @@ public class LoginHandler {
      * @param activityForResult
      */
     public void SignInGoogle(Activity activityForResult) {
+        mState = LoginState.LOGGING_IN;
         if(oAuth == null) {
             oAuth = new GoogleOauth(mContext);
         }
@@ -84,9 +90,18 @@ public class LoginHandler {
         signInListener.onSignOut();
     }
 
+    /**
+     * Pares the login request data to see if the user logged in successful.
+     * Use this for account creating and re-logging in.
+     * If you want to be notified if login was successful or not make sure to set the SignInListener
+     * @see #setSignInListener(SignInListener)
+     * @param data the data given back to your activity containing the login data.
+     */
     public void onSignInResult(Intent data) {
+        mState = LoginState.LOGGING_IN;
         AuthCredential credential = oAuth.onSignInResult(data);
         if(credential == null){
+            mState = LoginState.SIGNED_OUT;
             signInListener.onSignInFail();
             return;
         }
@@ -103,10 +118,12 @@ public class LoginHandler {
                 if (!task.isSuccessful()) {
                     Log.w(TAG, "signInWithCredential", task.getException());
                     mFirebaseUser = null;
+                    mState = LoginState.SIGNED_OUT;
                     signInListener.onSignInFail();
                 } else {
 
                     mFirebaseUser = mFirebaseAuth.getCurrentUser();
+                    mState = LoginState.SIGNED_IN;
                     signInListener.onSignInSuccessful();
                 }
 
@@ -117,10 +134,18 @@ public class LoginHandler {
     }
 
 
+    /**
+     * Set this if you want to be notified if login was successful or not.
+     * @param signInListener will be triggered if login failed or successful. also if you
+     *                       want to be notified when the user logs out.
+     */
     public void setSignInListener(SignInListener signInListener) {
         this.signInListener = signInListener;
     }
 
+    public LoginState getState() {
+        return mState;
+    }
 
     private void LogD(String message) {
         Log.d(TAG,message);
