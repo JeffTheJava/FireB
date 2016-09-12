@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FireB</string>
+    <string name="app_name">FireB Chat</string>
     <string name="logo_name">FireB Chat</string>
 
     <string name="login_loading">Logging in please wait.....</string>

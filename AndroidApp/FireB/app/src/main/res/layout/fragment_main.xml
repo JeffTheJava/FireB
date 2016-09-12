@@ -5,19 +5,13 @@
     android:orientation="vertical">
 
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
-
     <TextView
         android:id="@+id/label_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sign_in_button"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="Click a Channel Below" />
+        android:text="Select a discussion board or create a new one." />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -42,7 +36,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="15dp"
-            android:text="New Channel" />
+            android:text="Create Channel" />
 
         <Button
             android:id="@+id/sign_out_button"

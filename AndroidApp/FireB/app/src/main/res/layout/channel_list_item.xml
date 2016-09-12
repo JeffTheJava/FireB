@@ -26,7 +26,8 @@
             android:id="@+id/channel_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Channel" />
+            android:text="Channel"
+            android:textSize="10dp" />
 
         <TextView
             android:id="@+id/channel_name"
@@ -36,7 +37,7 @@
             android:layout_below="@+id/channel_label"
             android:text="Channel Name"
             android:textColor="@android:color/black"
-            android:textSize="15dp" />
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/channel_time_label"
@@ -44,8 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/channel_name"
-            android:layout_marginTop="15dp"
-            android:text="Created" />
+            android:layout_marginTop="10dp"
+            android:text="Created"
+            android:textSize="10dp" />
 
         <TextView
             android:id="@+id/channel_time"
@@ -63,7 +65,8 @@
             android:text="enter room"
             android:id="@+id/channel_enter"
             android:layout_below="@+id/channel_time"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp" />
     </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

@@ -37,7 +37,6 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
     private FirebaseUser mUser;
 
     private RecyclerView mRecyclerView;
-    private SignInButton signInButton;
     private Button signOutButton;
     private TextView headerTextView;
     private LoginHandler mLoginHandler;
@@ -59,9 +58,7 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        signInButton = (SignInButton) view.findViewById(R.id.sign_in_button);
         signOutButton = (Button) view.findViewById(R.id.sign_out_button);
-
         newChannelButton = (Button) view.findViewById(R.id.new_channel);
 
 
@@ -69,7 +66,6 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        signInButton.setOnClickListener(this);
         signOutButton.setOnClickListener(this);
         newChannelButton.setOnClickListener(this);
 
@@ -138,8 +134,6 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.sign_in_button:
-                break;
             case R.id.sign_out_button:
                 mLoginHandler.signOut();
                 break;
@@ -185,13 +179,11 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
     private void updateUI() {
         mUser = mLoginHandler.getUser();
         if(mLoginHandler.getState() != LoginHandler.LoginState.SIGNED_IN){
-            signInButton.setEnabled(true);
             signOutButton.setEnabled(false);
             setHeaderText("Please sign in!!");
         }else{
-            signInButton.setEnabled(false);
             signOutButton.setEnabled(true);
-            setHeaderText("Signed in user :"+mUser.getDisplayName());
+            setHeaderText(mUser.getDisplayName());
         }
 
         if(adapter != null){
