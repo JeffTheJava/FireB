@@ -3,11 +3,9 @@ package com.litmantech.fireb;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.common.SignInButton;
 import com.litmantech.fireb.database.DatabaseHandler;
 import com.litmantech.fireb.database.DatabaseInitListener;
 import com.litmantech.fireb.database.channels.Channel;
 import com.litmantech.fireb.database.messages.MessageEventListener;
 import com.litmantech.fireb.database.messages.MessageRecyclerAdapter;
-import com.litmantech.fireb.login.LoginHandler;
 
 /**
  * Created by Jeff_Dev_PC on 9/8/2016.

@@ -1,15 +1,9 @@
 package com.litmantech.fireb.database;
 
-import android.util.Log;
-
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.litmantech.fireb.database.channels.Channel;
 import com.litmantech.fireb.database.channels.ChannelEventListener;
 import com.litmantech.fireb.database.channels.ChannelHandler;
@@ -19,9 +13,6 @@ import com.litmantech.fireb.database.messages.MessagesHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Jeff_Dev_PC on 9/8/2016.

@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.SignInButton;
 import com.google.firebase.auth.FirebaseUser;
 import com.litmantech.fireb.database.DatabaseHandler;
 import com.litmantech.fireb.database.DatabaseInitListener;

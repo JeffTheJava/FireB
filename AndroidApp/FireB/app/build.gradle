@@ -10,6 +10,9 @@ android {
         targetSdkVersion 23
         versionCode 9
         versionName "0.5.2"
+
+        // Enabling multidex support.
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -26,12 +29,13 @@ dependencies {
     compile 'com.android.support:design:24.1.1'
     compile 'com.android.support:cardview-v7:24.1.1'
 
+    compile 'com.google.android.gms:play-services:9.4.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
+
     compile 'com.google.firebase:firebase-core:9.4.0'
     compile 'com.google.firebase:firebase-auth:9.4.0'
     compile "com.google.firebase:firebase-database:9.4.0"
-    compile 'com.firebaseui:firebase-ui-database:0.4.1'
     compile 'com.google.android.gms:play-services-auth:9.4.0'
-    compile 'com.firebase:firebase-client-android:2.3.1'
     // https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime
     compile group: 'org.ocpsoft.prettytime', name: 'prettytime', version: '4.0.1.Final'
 

@@ -2,7 +2,6 @@ package com.litmantech.fireb.login.facebook;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;

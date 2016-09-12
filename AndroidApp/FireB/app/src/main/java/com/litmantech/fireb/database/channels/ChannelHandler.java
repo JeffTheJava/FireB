@@ -5,7 +5,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.litmantech.fireb.database.DatabaseInitListener;
-import com.litmantech.fireb.database.messages.Message;
 
 import java.util.HashMap;
 import java.util.Iterator;
