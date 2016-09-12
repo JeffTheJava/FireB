@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.litmantech.fireb.R;
+
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +35,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
     @Override
     public ChannelViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(android.R.layout.two_line_list_item, parent,false);
+        View view = mInflater.inflate(R.layout.channel_list_item, parent,false);
         ChannelViewHolder holder = new ChannelViewHolder(view);
         return holder;
     }
@@ -90,8 +92,8 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
         public ChannelViewHolder(View itemView){
             super(itemView);
             this.mitemView = itemView;
-            this.mTitle = (TextView) itemView.findViewById(android.R.id.text1);
-            this.mDate = (TextView) itemView.findViewById(android.R.id.text2);
+            this.mTitle = (TextView) itemView.findViewById(R.id.channel_name);
+            this.mDate = (TextView) itemView.findViewById(R.id.channel_time);
 
         }
 

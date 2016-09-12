@@ -39,7 +39,7 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
     private RecyclerView mRecyclerView;
     private SignInButton signInButton;
     private Button signOutButton;
-    private TextView dataTextView;
+    private TextView headerTextView;
     private LoginHandler mLoginHandler;
     private ChannelRecyclerAdapter adapter;
     private DatabaseHandler dbHolder;
@@ -61,7 +61,7 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
 
         signInButton = (SignInButton) view.findViewById(R.id.sign_in_button);
         signOutButton = (Button) view.findViewById(R.id.sign_out_button);
-        dataTextView = (TextView) view.findViewById(R.id.textView);
+
         newChannelButton = (Button) view.findViewById(R.id.new_channel);
 
 
@@ -76,6 +76,13 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
         updateUI();
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated (Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        headerTextView = (TextView) this.getActivity().findViewById(R.id.header_text);
+        updateUI();
     }
 
     @Override
@@ -180,15 +187,27 @@ public class ChannelFragment extends Fragment implements View.OnClickListener, S
         if(mLoginHandler.getState() != LoginHandler.LoginState.SIGNED_IN){
             signInButton.setEnabled(true);
             signOutButton.setEnabled(false);
-            dataTextView.setText("Please sign in!!");
+            setHeaderText("Please sign in!!");
         }else{
             signInButton.setEnabled(false);
             signOutButton.setEnabled(true);
-            dataTextView.setText("Signed in user :"+mUser.getDisplayName());
+            setHeaderText("Signed in user :"+mUser.getDisplayName());
         }
 
         if(adapter != null){
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * the header view is part of the MainActivity not this fragment
+     * the fragment might be ready to draw but not the activity
+     * we need to check if it's null before setting it's value
+     * @param message
+     */
+    private void setHeaderText(String message) {
+        if(headerTextView != null) {
+            headerTextView.setText(message);
         }
     }
 
