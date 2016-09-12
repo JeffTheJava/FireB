@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.litmantech.fireb.R;
@@ -43,7 +44,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
     public void onBindViewHolder(ChannelViewHolder holder, int position) {
         final Channel channel = (Channel) mChannels.values().toArray()[position];
         holder.setData(channel);
-        holder.getItemView().setOnClickListener(new View.OnClickListener() {
+        holder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ChannelRecyclerAdapter.this.setHighlightedItemKey(channel.getKey());
@@ -86,6 +87,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
         private final TextView mTitle;
         private final TextView mDate;
         private final View mitemView;
+        private final Button mEnterButton;
         private String mKey = "";
 
         public ChannelViewHolder(View itemView){
@@ -93,6 +95,8 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
             this.mitemView = itemView;
             this.mTitle = (TextView) itemView.findViewById(R.id.channel_name);
             this.mDate = (TextView) itemView.findViewById(R.id.channel_time);
+            this.mEnterButton = (Button) itemView.findViewById(R.id.channel_enter);
+
 
         }
 
@@ -102,10 +106,6 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
             mDate.setText(mPrettyTime.format(new Date(data.getCreated()*1000))+" ... "+getDate(data.getCreated(), "hh:mm:ss dd/MM/yyyy"));
             mKey = data.getKey();
             highlightBackground();
-        }
-
-        public View getItemView() {
-            return mitemView;
         }
 
         public String getDate(long milliSeconds, String dateFormat) {
@@ -125,5 +125,9 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
             }
         }
 
+        public void setOnClickListener(View.OnClickListener onClickListener) {
+            mEnterButton.setOnClickListener(onClickListener);
+            mitemView.setOnClickListener(onClickListener);
+        }
     }
 }

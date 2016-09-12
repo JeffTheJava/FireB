@@ -20,6 +20,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
 }
 
 dependencies {
@@ -40,4 +43,5 @@ dependencies {
     compile group: 'org.ocpsoft.prettytime', name: 'prettytime', version: '4.0.1.Final'
 
 }
+
 apply plugin: 'com.google.gms.google-services'
