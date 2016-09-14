@@ -6,8 +6,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.litmantech.fireb.database.DatabaseInitListener;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jeff_Dev_PC on 9/9/2016.
@@ -15,7 +21,7 @@ import java.util.Iterator;
 public class ChannelHandler {
     private boolean initializing = false;
     private ChannelEventListener mChannelEventListener;
-    private final HashMap<String,Channel> channels = new HashMap<>();
+    private final LinkedHashMap<String,Channel> channels = new LinkedHashMap<>();
     private DatabaseReference dbChannels;
     private DatabaseReference dbRoot;
 
@@ -30,7 +36,7 @@ public class ChannelHandler {
                 channels.clear();
                 HashMap<String,Object> channelsHolder = (HashMap<String, Object>) dataSnapshot.getValue();
                 BuildChannels(channelsHolder);
-                if(initializing){//TODO i don't like this if statement i dont know how to fix it yet. will get back to it.
+                if(initializing){//TODO i don't like this if statement i don't know how to fix it yet. will get back to it.
                     initListener.onInitComplete();
                     initializing = false;
                 }
@@ -60,27 +66,36 @@ public class ChannelHandler {
 
 
     private void BuildChannels(HashMap channelsHolder) {
+        HashMap dataHolder = new HashMap();
+
         Iterator it = channelsHolder.entrySet().iterator();
         while (it.hasNext()) {
             HashMap.Entry pair = (HashMap.Entry)it.next();
-            updateChannel((String) pair.getKey(), (HashMap) pair.getValue());
+            Channel channel = parseChannel((String) pair.getKey(), (HashMap) pair.getValue());//this will return null
+            if(channel == null) continue;
+            dataHolder.put(channel.getKey(), channel);
         }
+
+        channels.clear();
+        sortByValues(dataHolder, channels);
     }
 
+
     /**
-     * Will add entry if doesn't exists. Will update if exists.
+     * Be careful, Will return null
      * @param key
      * @param value
+     * @return will return null
      */
-    public void updateChannel(String key,  HashMap<String,Object> value) {
+    private Channel parseChannel(String key,HashMap<String, Object> value) {
         Object created =  value.get(Channel.CREATED_KEY);
-        if(created == null) return;
+        if(created == null) return null;
 
         Object title = value.get(Channel.TITLE_KEY);
-        if(title == null) return;
+        if(title == null) return null;
 
         Channel channel = new Channel(key,(long)created,(String)title);
-        channels.put(key,channel);
+        return channel;
     }
 
     public void setChannelEventListener(ChannelEventListener channelEventListener) {
@@ -108,5 +123,22 @@ public class ChannelHandler {
 
         dbRoot.child("c:"+channelKey).child(Channel.TOPIC_KEY).setValue(topic);
 
+    }
+
+    private void sortByValues(HashMap data, LinkedHashMap sortedHashMap) {
+        List list = new LinkedList(data.entrySet());
+        // Defined Custom Comparator here
+        Collections.sort(list, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return ((Comparable) ((Channel)((Map.Entry) (o2)).getValue()).getCreated()).compareTo(((Channel)((Map.Entry) (o1)).getValue()).getCreated());
+            }
+        });
+
+        // Here I am copying the sorted list in HashMap
+        // using LinkedHashMap to preserve the insertion order
+        for (Iterator it = list.iterator(); it.hasNext();) {
+            Map.Entry entry = (Map.Entry) it.next();
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+        }
     }
 }

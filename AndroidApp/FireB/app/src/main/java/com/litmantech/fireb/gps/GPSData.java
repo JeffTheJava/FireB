@@ -18,7 +18,6 @@ import android.location.LocationListener;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.List;
@@ -164,11 +163,11 @@ public class GPSData implements LocationListener {
     public void onLocationChanged(Location location) {
         int lat = (int) (location.getLatitude());
         int lng = (int) (location.getLongitude());
-        try {
+        /*try {TODO remove all map stuff
             print(new LatLng(lat,lng));
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
@@ -190,8 +189,9 @@ public class GPSData implements LocationListener {
 
     }
 
-    private void print(LatLng latLng) throws IOException {
-        List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+    private void print() throws IOException {
+        //List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        List<Address> addresses = geocoder.getFromLocation(0,0, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
         String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
         String city = addresses.get(0).getLocality();
@@ -199,7 +199,7 @@ public class GPSData implements LocationListener {
         String country = addresses.get(0).getCountryName();
         String postalCode = addresses.get(0).getPostalCode();
         String knownName = addresses.get(0).getFeatureName();
-        Log.e(TAG,"Lat:"+String.valueOf(latLng.latitude)+" ... Lng:"+String.valueOf(latLng.longitude));
-        Log.e(TAG,"Here:\n"+address+"\n"+city+"\n"+state+"\n"+country+"\n"+postalCode+"\n"+knownName);
+        //Log.e(TAG,"Lat:"+String.valueOf(latLng.latitude)+" ... Lng:"+String.valueOf(latLng.longitude));
+        //Log.e(TAG,"Here:\n"+address+"\n"+city+"\n"+state+"\n"+country+"\n"+postalCode+"\n"+knownName);
     }
 }

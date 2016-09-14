@@ -8,8 +8,8 @@ android {
         applicationId "com.litmantech.fireb"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 9
-        versionName "0.5.2"
+        versionCode 11
+        versionName "0.6.0"
 
         // Enabling multidex support.
         multiDexEnabled true
@@ -32,8 +32,6 @@ dependencies {
     compile 'com.android.support:design:24.1.1'
     compile 'com.android.support:cardview-v7:24.1.1'
 
-    compile 'com.google.android.gms:play-services:9.4.0'
-    compile 'com.google.android.gms:play-services-location:9.4.0'
 
     compile 'com.google.firebase:firebase-core:9.4.0'
     compile 'com.google.firebase:firebase-auth:9.4.0'
